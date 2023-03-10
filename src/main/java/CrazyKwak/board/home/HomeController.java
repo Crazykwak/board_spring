@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
-    @GetMapping("/")
+    @GetMapping("/api")
     public ResponseEntity home() {
         return new ResponseEntity("연결 성공!", HttpStatus.OK);
     }

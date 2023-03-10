@@ -1,5 +1,6 @@
 package CrazyKwak.board.member.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberJoinDto {
 
+    @NotBlank(message = "아이디 필수")
     private String userId;
+    @NotBlank(message = "이메일 필수")
     private String email;
+    @NotBlank(message = "비번 필수")
     private String password;
 
     @Builder

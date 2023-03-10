@@ -37,7 +37,7 @@ public class SecurityConfig {
 
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("Authorization");
+        configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
         configuration.setAllowCredentials(true);
 
