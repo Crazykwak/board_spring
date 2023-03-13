@@ -22,7 +22,7 @@ public class MemberService {
 
     public Long joinMember(MemberJoinDto memberJoinDto) {
 
-        verifyMember(memberJoinDto);
+        verifyMemberAlreadyExists(memberJoinDto.getUserId());
         memberJoinDto.setPassword(bCryptPasswordEncoder.encode(memberJoinDto.getPassword()));
         Member member = memberMapper.memberJoinDtoToMember(memberJoinDto);
         memberRepository.save(member);
@@ -30,10 +30,39 @@ public class MemberService {
         return member.getId();
     }
 
-    private void verifyMember(MemberJoinDto memberJoinDto) {
-        Optional<Member> findMember = memberRepository.findByUserId(memberJoinDto.getUserId());
+    /**
+     * userId로 된 회원이 있는지 확인.
+     * 있을 경우 MEMBER_EXISTS 예외를 터트린다.
+     * @param userId
+     */
+    public void verifyMemberAlreadyExists(String userId) {
+        Optional<Member> findMember = memberRepository.findByUserId(userId);
         findMember.ifPresent(el -> {
             throw new BusinessException(ExceptionCode.MEMBER_EXISTS);
         });
+    }
+
+    /**
+     * userId로 된 회원이 있는지 확인
+     * 없을 경우 MEMBER_NOT_EXISTS 예외를 터트린다.
+     * @param userId
+     */
+    public Member verifyMemberNotExists(String userId) {
+        Optional<Member> findMember = memberRepository.findByUserId(userId);
+        return findMember.orElseThrow(
+                () -> new BusinessException(ExceptionCode.MEMBER_NOT_EXISTS)
+        );
+    }
+
+    /**
+     * 로그인 비밀번호 매치
+     * verifyPassword(로그인 시도하는 비번, 실제 비번)
+     * @param loginTryPassword
+     * @param originalMemberPassword
+     */
+    public void verifyPassword(String loginTryPassword, String originalMemberPassword) {
+        if (!bCryptPasswordEncoder.matches(loginTryPassword, originalMemberPassword)) {
+            throw new BusinessException(ExceptionCode.PASSWORD_NOT_MATCH);
+        }
     }
 }
