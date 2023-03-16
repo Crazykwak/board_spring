@@ -1,4 +1,4 @@
-package CrazyKwak.board.home;
+package CrazyKwak.board.utils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

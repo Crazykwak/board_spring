@@ -2,6 +2,7 @@ package CrazyKwak.board.security;
 
 import CrazyKwak.board.member.service.MemberService;
 import CrazyKwak.board.security.filter.JwtAuthenticationFilter;
+import CrazyKwak.board.security.filter.JwtAuthorizationFilter;
 import CrazyKwak.board.token.TokenService;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,7 @@ public class SecurityConfig {
             jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
 
             builder.addFilter(jwtAuthenticationFilter);
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager, memberService, tokenService));
         }
     }
 
