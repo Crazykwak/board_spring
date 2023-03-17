@@ -46,18 +46,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String accessToken = header.replace("Bearer ", "");
 
         Claims claims = tokenService.getClaims(accessToken);
-        boolean isExpire = tokenService.isExpire(claims.getExpiration(), new Date(System.currentTimeMillis()));
-
-        if (isExpire) {
-            log.error("토큰 시간 만료");
-            chain.doFilter(request, response);
-            return;
-        }
+        tokenService.isExpire(claims.getExpiration(), new Date(System.currentTimeMillis())); // 토큰 만료면 예외 뱉음
 
         String userId = claims.get("userId", String.class);
 
         if (userId != null) {
-            Member member = memberService.verifyMemberNotExists(userId);
+            Member member = memberService.verifyMemberNotExists(userId); // 회원 없으면 예외 뱉음
             PrincipalDetails principalDetails = new PrincipalDetails(member);
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
