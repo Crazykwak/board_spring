@@ -16,7 +16,7 @@ public class TokenController {
 
     private final TokenService tokenService;
 
-    @PostMapping("/refresh_authrization")
+    @PostMapping("/refresh_authorization")
     public ResponseEntity refreshAuthorization(@RequestBody String refreshToken,
                                                HttpServletResponse response) {
 
