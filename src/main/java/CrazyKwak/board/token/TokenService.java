@@ -26,6 +26,19 @@ public class TokenService {
                 .compact();
     }
 
+    public String getRefreshToken(String userId) {
+        Claims claims = Jwts.claims();
+        claims.put("userId", userId);
+
+        return Jwts.builder()
+                .setSubject("RefreshToken")
+                .setIssuedAt(new Date())
+                .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + (refreshTokenValidationSecond * 1000)))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public Claims getClaims(String accessToken) {
 
         return Jwts.parserBuilder()

@@ -62,8 +62,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
         String accessToken = tokenService.getAccessToken(principalDetails.getUsername());
+        String refreshToken = tokenService.getRefreshToken(principalDetails.getUsername());
 
         response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("RefreshToken", "Bearer " + refreshToken);
 
     }
 }
