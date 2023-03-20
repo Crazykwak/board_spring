@@ -20,7 +20,7 @@ public class TokenController {
     public ResponseEntity refreshAuthorization(@RequestBody String refreshToken,
                                                HttpServletResponse response) {
 
-        String userId = tokenService.verifyRefreshTokenForAccessTokenAndGetUserId(refreshToken);
+        String userId = tokenService.getClaims(refreshToken).get("userId", String.class);
         String accessToken = tokenService.getAccessToken(userId);
         response.addHeader("Authorization", "Bearer " + accessToken);
 
