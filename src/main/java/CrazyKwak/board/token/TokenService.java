@@ -14,10 +14,7 @@ import java.util.Date;
 import static CrazyKwak.board.utils.SecretCode.*;
 
 @Service
-@RequiredArgsConstructor
 public class TokenService {
-
-    private final TokenRepository tokenRepository;
 
     public String getAccessToken(String userId) {
         Claims claims = Jwts.claims();
@@ -44,20 +41,7 @@ public class TokenService {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        insertRefreshToken(userId, refreshToken);
-
         return refreshToken;
-    }
-
-    @Transactional
-    private void insertRefreshToken(String userId, String refreshToken) {
-
-        RefreshToken token = RefreshToken.builder()
-                .token(refreshToken)
-                .userId(userId)
-                .build();
-
-        tokenRepository.save(token);
     }
 
     public Claims getClaims(String accessToken) {
@@ -80,16 +64,4 @@ public class TokenService {
         }
     }
 
-    public String verifyRefreshTokenForAccessTokenAndGetUserId(String refreshToken) {
-
-        Claims claims = getClaims(refreshToken);
-        isExpire(claims.getExpiration(), new Date(System.currentTimeMillis()));
-        String userId = claims.get("userId", String.class);
-
-        tokenRepository.findRefreshTokenByUserIdAndToken(userId, refreshToken).orElseThrow(
-                () -> new BusinessException(ExceptionCode.TOKEN_NOT_EXISTS)
-        );
-
-        return userId;
-    }
 }
