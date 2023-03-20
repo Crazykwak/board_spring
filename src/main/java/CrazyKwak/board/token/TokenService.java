@@ -57,7 +57,7 @@ public class TokenService {
      * @param now
      */
     public void isExpire(Date expiration, Date now) {
-        if (!expiration.before(now)) {
+        if (expiration.before(now)) {
             throw new BusinessException(ExceptionCode.TOKEN_EXPIRED);
         }
     }
