@@ -34,6 +34,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+        if (request.getRequestURI().equals("/api/refresh_authorization")) {
+            log.info("요청 들어옴 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ");
+            chain.doFilter(request, response);
+            return;
+        }
+
         log.info("권한 필터 작동! 토큰 확인");
         String header = request.getHeader("Authorization");
 

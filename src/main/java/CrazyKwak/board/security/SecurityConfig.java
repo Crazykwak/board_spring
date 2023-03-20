@@ -1,6 +1,7 @@
 package CrazyKwak.board.security;
 
 import CrazyKwak.board.member.service.MemberService;
+import CrazyKwak.board.security.exception.JwtExceptionFilter;
 import CrazyKwak.board.security.filter.JwtAuthenticationFilter;
 import CrazyKwak.board.security.filter.JwtAuthorizationFilter;
 import CrazyKwak.board.token.TokenService;
@@ -70,6 +71,7 @@ public class SecurityConfig {
 
             builder.addFilter(jwtAuthenticationFilter);
             builder.addFilter(new JwtAuthorizationFilter(authenticationManager, memberService, tokenService));
+            builder.addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
         }
     }
 
