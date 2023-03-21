@@ -1,5 +1,6 @@
 package CrazyKwak.board.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,13 @@ public class GlobalExceptionHandler {
 
         log.error("비즈니스 예외 발생! = {}", businessException);
 
+        return new ResponseEntity(businessException.getExceptionCode().getMessage(), HttpStatusCode.valueOf(businessException.getExceptionCode().getStatus()));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity expiredJwtExceptionHandle(ExpiredJwtException expiredJwtException) {
+        log.error("리프레시 토큰 시간 만료");
+        BusinessException businessException = new BusinessException(ExceptionCode.TOKEN_EXPIRED);
         return new ResponseEntity(businessException.getExceptionCode().getMessage(), HttpStatusCode.valueOf(businessException.getExceptionCode().getStatus()));
     }
 }
