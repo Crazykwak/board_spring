@@ -8,6 +8,7 @@ import CrazyKwak.board.member.repository.MemberRepository;
 import CrazyKwak.board.member.service.MemberService;
 import CrazyKwak.board.security.principal.PrincipalDetails;
 import CrazyKwak.board.token.TokenService;
+import CrazyKwak.board.utils.DecryptService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final MemberService memberService;
     private final TokenService tokenService;
+    private final DecryptService decryptService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -40,15 +46,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             MemberLoginDto memberLoginDto = objectMapper.readValue(request.getInputStream(), MemberLoginDto.class);
-            Member member = memberService.verifyMemberNotExists(memberLoginDto.getUserId()); // 없으면 예외 터짐
-            memberService.verifyPassword(memberLoginDto.getPassword(), member.getPassword()); // 비번 안맞으면 예외 터짐
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberLoginDto.getUserId(), memberLoginDto.getPassword());
+            String userIdAndPassword = decryptService.decryptLoginData(memberLoginDto.getEncryptIdPassword());
+            String[] split = userIdAndPassword.split("\\|");
+            String userId = split[0];
+            String password = split[1];
+
+            Member member = memberService.verifyMemberNotExists(userId); // 없으면 예외 터짐
+            memberService.verifyPassword(split[1], member.getPassword()); // 비번 안맞으면 예외 터짐
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
             return authentication;
 
-        } catch (IOException e) {
+        } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException |
+                 BadPaddingException e) {
             log.error("JwtAuthenticationFilter에서 IO 예외 발생! = {}", e);
         }
 

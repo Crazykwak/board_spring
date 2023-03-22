@@ -5,6 +5,7 @@ import CrazyKwak.board.security.exception.JwtExceptionFilter;
 import CrazyKwak.board.security.filter.JwtAuthenticationFilter;
 import CrazyKwak.board.security.filter.JwtAuthorizationFilter;
 import CrazyKwak.board.token.TokenService;
+import CrazyKwak.board.utils.DecryptService;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
     private final MemberService memberService;
     private final TokenService tokenService;
+    private final DecryptService decryptService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -66,7 +68,7 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             log.info("매니저!!! = {}", authenticationManager);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, memberService, tokenService);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, memberService, tokenService, decryptService);
             jwtAuthenticationFilter.setFilterProcessesUrl("/api/login");
 
             builder.addFilter(jwtAuthenticationFilter);
