@@ -47,15 +47,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             ObjectMapper objectMapper = new ObjectMapper();
             MemberLoginDto memberLoginDto = objectMapper.readValue(request.getInputStream(), MemberLoginDto.class);
 
+            // 복호화 후 dto에 데이터 세팅해 줌.
             String userIdAndPassword = decryptService.decryptLoginData(memberLoginDto.getEncryptIdPassword());
-            String[] split = userIdAndPassword.split("\\|");
-            String userId = split[0];
-            String password = split[1];
+            decryptService.splitLoginData(memberLoginDto, userIdAndPassword);
 
-            Member member = memberService.verifyMemberNotExists(userId); // 없으면 예외 터짐
-            memberService.verifyPassword(split[1], member.getPassword()); // 비번 안맞으면 예외 터짐
+            Member member = memberService.verifyMemberNotExists(memberLoginDto.getUserId()); // 없으면 예외 터짐
+            memberService.verifyPassword(memberLoginDto.getPassword(), member.getPassword()); // 비번 안맞으면 예외 터짐
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberLoginDto.getUserId(), memberLoginDto.getPassword());
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
             return authentication;
