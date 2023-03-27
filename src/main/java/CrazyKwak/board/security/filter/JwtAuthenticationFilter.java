@@ -28,6 +28,8 @@ import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -60,7 +62,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authentication;
 
         } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException |
-                 BadPaddingException e) {
+                 BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("JwtAuthenticationFilter에서 IO 예외 발생! = {}", e);
         }
 
