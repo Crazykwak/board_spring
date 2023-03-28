@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-import static CrazyKwak.board.utils.SecretCode.*;
+import static CrazyKwak.board.config.SecretCode.*;
 
 @Service
 public class TokenService {
