@@ -1,10 +1,10 @@
 package CrazyKwak.board.utils;
 
 import CrazyKwak.board.config.SecretCode;
+import CrazyKwak.board.member.dto.MemberJoinDto;
 import CrazyKwak.board.member.dto.MemberLoginDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
@@ -74,5 +74,12 @@ public class DecryptService {
         memberLoginDto.setUserId(split[0]);
         memberLoginDto.setPassword(split[1]);
 
+    }
+
+    public void splitJoinData(MemberJoinDto memberJoinDto, String decrypted) {
+        String[] split = decrypted.split("\\|");
+        memberJoinDto.setUserId(split[0]);
+        memberJoinDto.setPassword(split[1]);
+        memberJoinDto.setEmail(split[2]);
     }
 }

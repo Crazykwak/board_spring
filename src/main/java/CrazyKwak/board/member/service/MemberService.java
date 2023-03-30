@@ -6,10 +6,18 @@ import CrazyKwak.board.member.dto.MemberJoinDto;
 import CrazyKwak.board.member.entity.Member;
 import CrazyKwak.board.member.mapper.MemberMapper;
 import CrazyKwak.board.member.repository.MemberRepository;
+import CrazyKwak.board.utils.DecryptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 @Service
@@ -19,9 +27,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final DecryptService decryptService;
+
 
     public Long joinMember(MemberJoinDto memberJoinDto) {
 
+        decryptInMemberService(memberJoinDto);
         verifyMemberAlreadyExists(memberJoinDto.getUserId());
         memberJoinDto.setPassword(bCryptPasswordEncoder.encode(memberJoinDto.getPassword()));
         Member member = memberMapper.memberJoinDtoToMember(memberJoinDto);
@@ -64,5 +75,18 @@ public class MemberService {
         if (!bCryptPasswordEncoder.matches(loginTryPassword, originalMemberPassword)) {
             throw new BusinessException(ExceptionCode.PASSWORD_NOT_MATCH);
         }
+    }
+
+    private void decryptInMemberService(MemberJoinDto memberJoinDto) {
+        String decrypted;
+
+        try {
+            decrypted = decryptService.decryptLoginData(memberJoinDto.getEncryptIdPassword());
+        } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException |
+                 BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+        decryptService.splitJoinData(memberJoinDto, decrypted);
     }
 }
