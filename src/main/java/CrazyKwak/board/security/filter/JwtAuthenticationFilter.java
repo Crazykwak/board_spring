@@ -20,13 +20,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -61,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             return authentication;
 
-        } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | IllegalBlockSizeException |
+        } catch (IOException | InvalidKeyException | IllegalBlockSizeException |
                  BadPaddingException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             log.error("JwtAuthenticationFilter에서 IO 예외 발생! = {}", e);
         }

@@ -9,7 +9,8 @@ public enum ExceptionCode {
     PASSWORD_NOT_MATCH(401, "비밀번호가 맞지 않습니다."),
     TOKEN_EXPIRED(401, "토큰 시간 만료"),
     TOKEN_NOT_EXISTS(404, "유효하지 않은 토큰입니다."),
-    UNAUTHORIZED(401, "인증 실패!");
+    UNAUTHORIZED(401, "인증 실패!"),
+    I_DONT_KNOW(500, "서버에서 뭔 일 났는디?");
 
     @Getter
     private int status;

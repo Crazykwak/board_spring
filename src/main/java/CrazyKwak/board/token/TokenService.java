@@ -1,18 +1,25 @@
 package CrazyKwak.board.token;
 
+import CrazyKwak.board.config.SecretCode;
 import CrazyKwak.board.exception.BusinessException;
 import CrazyKwak.board.exception.ExceptionCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
-import static CrazyKwak.board.config.SecretCode.*;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
+
+    private final SecretCode secretCode;
 
     public String getAccessToken(String userId) {
         Claims claims = Jwts.claims();
@@ -22,8 +29,8 @@ public class TokenService {
                 .setSubject("AccessToken")
                 .setIssuedAt(new Date())
                 .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + (accessTokenValidationSecond * 1000)))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + (secretCode.getAccessTokenValidationSecond() * 1000)))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -35,8 +42,8 @@ public class TokenService {
                 .setSubject("RefreshToken")
                 .setIssuedAt(new Date())
                 .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis() + (refreshTokenValidationSecond * 1000)))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + (secretCode.getRefreshTokenValidationSecond() * 1000)))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 
         return refreshToken;
@@ -45,7 +52,7 @@ public class TokenService {
     public Claims getClaims(String accessToken) {
 
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
@@ -60,6 +67,11 @@ public class TokenService {
         if (expiration.before(now)) {
             throw new BusinessException(ExceptionCode.TOKEN_EXPIRED);
         }
+    }
+
+    public Key getKey() {
+        byte[] keyBytes = secretCode.getSecretKey().getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
 }

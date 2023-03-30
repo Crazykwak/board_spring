@@ -48,11 +48,11 @@ public class DecryptService {
      * @throws BadPaddingException
      * @throws UnsupportedEncodingException
      */
-    public String decryptLoginData(String encryptIdAndPassword) throws InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public String decryptLoginData(String encryptIdAndPassword) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
         byte[] decryptForBase64 = Base64.getDecoder().decode(encryptIdAndPassword);
 
-        String stringKey = secretCode.RSA_PRIVATE_KEY;
+        String stringKey = secretCode.getRSA_PRIVATE_KEY();
 
         stringKey = stringKey.replace("-----BEGIN PRIVATE KEY-----", "")
                     .replaceAll("\\n", "")
