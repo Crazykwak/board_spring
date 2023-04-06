@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Slf4j
@@ -55,8 +56,8 @@ public class DecryptService {
         String stringKey = secretCode.getRSA_PRIVATE_KEY();
 
         stringKey = stringKey.replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replaceAll("\\n", "")
-                    .replace("-----END PRIVATE KEY-----", "");
+                    .replace("-----END PRIVATE KEY-----", "")
+                    .replaceAll(" ", "");
 
         byte[] decode = Base64.getDecoder().decode(stringKey);
 
