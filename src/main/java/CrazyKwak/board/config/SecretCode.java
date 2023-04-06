@@ -13,7 +13,7 @@ public class SecretCode {
     private String secretKey;
     @Value("${jwt.accessTokenValidationSecond}")
     private long accessTokenValidationSecond;
-    @Value("${jwt.accessTokenValidationSecond}")
+    @Value("${jwt.refreshTokenValidationSecond}")
     private long refreshTokenValidationSecond;
     @Value("${decrypt.privateKey}")
     private  String RSA_PRIVATE_KEY;
