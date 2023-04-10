@@ -3,6 +3,7 @@ package CrazyKwak.board.freeboard.entity;
 
 import CrazyKwak.board.member.entity.Member;
 import CrazyKwak.board.utils.BaseTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,15 +20,14 @@ public class FreeBoard extends BaseTime {
     private String title;
     private String body;
     private boolean isView = true;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private String userId;
 
     @Builder
-    public FreeBoard(String title, String body, LocalDateTime createdAt, LocalDateTime modifiedAt, Member member) {
+    public FreeBoard(String title, String body, LocalDateTime createdAt, LocalDateTime modifiedAt, String userId) {
         this.title = title;
         this.body = body;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
-        this.member = member;
+        this.userId = userId;
     }
 }

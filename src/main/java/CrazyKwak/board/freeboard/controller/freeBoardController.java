@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/free-board")
 public class freeBoardController {
+
     private final FreeBoardService freeBoardService;
 
     /**
@@ -26,9 +27,11 @@ public class freeBoardController {
     public ResponseEntity getFreeBoardList(@RequestParam int page,
                                            @RequestParam int size) {
 
-        PageAndContents<FreeBoard> body = freeBoardService.getList(page, size);
+        PageAndContents<FreeBoard> result = freeBoardService.getList(page, size);
+        log.info(String.valueOf(page));
+        log.info(String.valueOf(size));
 
-        return new ResponseEntity(body, HttpStatus.OK);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @PostMapping

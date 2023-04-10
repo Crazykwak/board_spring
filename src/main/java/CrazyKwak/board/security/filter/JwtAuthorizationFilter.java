@@ -49,6 +49,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
+        log.info("토큰 들어옴 토큰 확인");
+
         String accessToken = header.replace("Bearer ", "");
 
         Claims claims = tokenService.getClaims(accessToken); // 만료면 예외 뱉음 jwtExceptionFilter 가서 터짐
