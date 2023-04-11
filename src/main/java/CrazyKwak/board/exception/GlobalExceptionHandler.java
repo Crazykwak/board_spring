@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity expiredJwtExceptionHandle(ExpiredJwtException expiredJwtException) {
         log.error("리프레시 토큰 시간 만료");
-        BusinessException exception = new BusinessException(ExceptionCode.TOKEN_EXPIRED);
-        return new ResponseEntity(new ExceptionResponse(exception.getMessage()), HttpStatusCode.valueOf(exception.getExceptionCode().getStatus()));
+        int status = ExceptionCode.TOKEN_EXPIRED.getStatus();
+        String message = ExceptionCode.TOKEN_EXPIRED.getMessage();
+        return new ResponseEntity(new ExceptionResponse(message, status), HttpStatusCode.valueOf(status));
     }
 }
