@@ -6,7 +6,6 @@ import CrazyKwak.board.exception.ExceptionResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component
 @Slf4j
@@ -49,7 +47,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(e.getExceptionCode().getStatus());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(new ResponseEntity<>(e, HttpStatusCode.valueOf(e.getExceptionCode().getStatus())));
+            om.writeValue(response.getWriter(), new ResponseEntity<>(e, HttpStatusCode.valueOf(e.getExceptionCode().getStatus())));
+
         } catch (Exception e) {
 
             log.info("예외 터짐", e);
