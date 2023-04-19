@@ -10,7 +10,8 @@ public enum ExceptionCode {
     TOKEN_EXPIRED(401, "토큰 시간 만료"),
     TOKEN_NOT_EXISTS(404, "유효하지 않은 토큰입니다."),
     UNAUTHORIZED(401, "인증 실패!"),
-    I_DONT_KNOW(500, "서버에서 뭔 일 났는디?");
+    I_DONT_KNOW(500, "서버에서 뭔 일 났는디?"),
+    BOARD_NOT_EXISTS(404, "해당 게시글이 없습니다.");
 
     @Getter
     private int status;

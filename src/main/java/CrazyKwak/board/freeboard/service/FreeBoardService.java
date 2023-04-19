@@ -1,6 +1,9 @@
 package CrazyKwak.board.freeboard.service;
 
+import CrazyKwak.board.exception.BusinessException;
+import CrazyKwak.board.exception.ExceptionCode;
 import CrazyKwak.board.freeboard.dto.FreeBoardDto;
+import CrazyKwak.board.freeboard.dto.FreeBoardResponseDto;
 import CrazyKwak.board.freeboard.entity.FreeBoard;
 import CrazyKwak.board.freeboard.mapper.FreeBoardMapper;
 import CrazyKwak.board.freeboard.repository.FreeBoardRepository;
@@ -13,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -37,5 +42,16 @@ public class FreeBoardService {
         FreeBoard freeBoard = mapper.freeBoardDtoToFreeBoardWithMember(freeBoardDto, member.getUserId());
         freeBoardRepository.save(freeBoard);
 
+    }
+
+    public FreeBoardResponseDto getBoardOne(long id) {
+
+        Optional<FreeBoard> result = freeBoardRepository.findById(id);
+        FreeBoard freeBoard = result.orElseThrow(
+                () -> new BusinessException(ExceptionCode.BOARD_NOT_EXISTS)
+        );
+        FreeBoardResponseDto freeBoardResponseDto = mapper.freeBoardToFreeBoardResponseDto(freeBoard);
+
+        return freeBoardResponseDto;
     }
 }

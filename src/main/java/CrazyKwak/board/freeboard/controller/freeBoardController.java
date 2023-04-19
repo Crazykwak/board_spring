@@ -1,6 +1,7 @@
 package CrazyKwak.board.freeboard.controller;
 
 import CrazyKwak.board.freeboard.dto.FreeBoardDto;
+import CrazyKwak.board.freeboard.dto.FreeBoardResponseDto;
 import CrazyKwak.board.freeboard.entity.FreeBoard;
 import CrazyKwak.board.freeboard.service.FreeBoardService;
 import CrazyKwak.board.security.principal.PrincipalDetails;
@@ -28,10 +29,16 @@ public class freeBoardController {
                                            @RequestParam int size) {
 
         PageAndContents<FreeBoard> result = freeBoardService.getList(page, size);
-        log.info(String.valueOf(page));
-        log.info(String.valueOf(size));
 
         return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity getFreeBoardList(@RequestParam long id) {
+
+        FreeBoardResponseDto freeBoardResponseDto = freeBoardService.getBoardOne(id);
+
+        return new ResponseEntity(freeBoardResponseDto, HttpStatus.OK);
     }
 
     @PostMapping
